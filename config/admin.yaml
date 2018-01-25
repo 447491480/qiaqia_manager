@@ -1,0 +1,47 @@
+index_view: page/index_report.html                                   #-------首页视图模板
+menus:
+ - title: 业务
+   nav_menu:
+    - title: 商品管理
+      third_menu:
+       - {title: 商品管理,view: page/biz/goods_mgr.html,icon: ''}
+       - {title: 分类管理,view: page/biz/goods_category_mgr.html,icon: ''}
+       - {title: 品牌管理,view: page/biz/goods_brand_mgr.html,icon: ''}
+       - {title: 我的分类,view: page/biz/my_category_mgr.html,icon: ''}
+    - title: 渠道管理
+      third_menu:
+       - {title: 客户管理,view: page/biz/member_mgr.html,icon: ''}
+       - {title: 供应商列表,view: page/biz/member_leader_list.html,icon: ''}
+       - {title: 客户审核,view: page/biz/member_check.html,icon: ''}
+       - {title: 用户管理,view: page/biz/user_mgr.html,icon: ''}
+    - title: 订单管理
+      third_menu:
+       - {title: 订单列表,view: page/biz/order_mgr.html,icon: ''}
+       - {title: 账期管理,view: page/biz/payment_days_mgr.html,icon: ''}
+    - title: 活动管理
+      third_menu:
+       - {title: 我添加的活动,view: page/biz/promotion_mgr.html,icon: ''}
+       - {title: 参加活动列表,view: page/biz/promotion_list.html,icon: ''}
+    - title: 新闻管理
+      third_menu:
+       - {title: 广告管理,view: page/biz/news_advert.html,icon: ''}
+       - {title: 新品管理,view: page/biz/news_arrival.html,icon: ''}
+ - title: 报表
+   nav_menu:
+    - title: 业务报表
+      third_menu:
+       - {title: 交易数据统计,view: page/biz/goods_sell_report.html,icon: ''}
+       - {title: 流水, view: page/biz/turnover_mgr.html,icon: ''}
+ - title: 后台管理
+   nav_menu:
+    - title: 后台账号管理
+      third_menu:
+       - {title: BU管理,view: page/biz/BU_mgr.html,icon: ''}
+       - {title: 地区管理,view: page/biz/region_mgr.html,icon: ''}
+       - {title: 子账号管理,view: page/system/admin_subaccount_mgr.html,icon: ''}
+       - {title: 角色权限管理,view: page/system/admin_role_mgr.html,icon: ''}
+       - {title: 数据导入,view: page/system/admin_upload_custom.html,icon: ''}
+    - title: 资料维护
+      third_menu:
+       - {title: 企业信息,view: page/system/admin_enterprise_mgr.html,icon: ''}
+       - {title: 修改密码,view: page/system/admin_reset_password.html,icon: ''}

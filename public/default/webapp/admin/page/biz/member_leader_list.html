@@ -1,0 +1,230 @@
+<div id="biz_leader_list_panel" >
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+        <legend>供应商列表</legend>
+    </fieldset>
+
+
+    <blockquote class="layui-elem-quote">
+        <div >
+            <button class="layui-btn layui-btn-small"><i class="layui-icon">&#x1002;</i> 刷新</button>
+        </div>
+    </blockquote>
+
+    <div class="layui-input-inline ">
+        <input type="text" lay-verify="required" placeholder="供应商名称" autocomplete="off" align="right"
+               class="layui-input">
+    </div>
+    <div class="layui-input-inline ">
+        <input type="text" lay-verify="required" placeholder="供应商编码" autocomplete="off" align="right"
+               class="layui-input">
+    </div>
+    <button class="layui-btn "> 查询</button>
+
+    <div style="margin-top: 10px;">
+        <table id="biz_leader_list_grid" class="jqgrid-table"></table>
+        <div id="biz_leader_list_grid_pager"></div>
+    </div>
+</div>
+
+<div id="biz_leader_info_panel" style="display: none;">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+        <legend>详细信息</legend>
+    </fieldset>
+    <blockquote class="layui-elem-quote">
+        <div>
+            <button class="layui-btn layui-btn-small"><i class="layui-icon">&#xe603;</i> 返回供应商列表</button>
+        </div>
+    </blockquote>
+    <div class="layui-form-item">
+        <div class="layui-form-item">
+            <label class="layui-form-label">积分</label>
+            <div class="layui-input-inline">
+                <input id="biz_leader_points" type="text" name="points" autocomplete="off" class="layui-input" disabled="disabled">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">总资产</label>
+            <div class="layui-input-inline">
+                <input id="biz_leader_asset" type="text" name="asset" autocomplete="off" class="layui-input" disabled="disabled">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">联系方式</label>
+            <div class="layui-input-inline">
+                <input id="biz_leader_communication" type="text" name="communication" autocomplete="off" class="layui-input" disabled="disabled">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">电子邮箱</label>
+            <div class="layui-input-inline">
+                <input id="biz_leader_email" type="text" name="email" autocomplete="off" class="layui-input" disabled="disabled">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">联系人</label>
+            <div class="layui-input-inline">
+                <input id="biz_leader_contactor" type="text" name="contactor" autocomplete="off" class="layui-input" disabled="disabled">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">司办</label>
+            <div class="layui-input-inline">
+                <input id="biz_leader_memberoffice" type="text" name="memberoffice" autocomplete="off" class="layui-input" disabled="disabled">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">竞争态势</label>
+            <div class="layui-input-inline">
+                <input id="biz_leader_compete" type="text" name="compete" autocomplete="off" class="layui-input" disabled="disabled">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    layui.use(['commonUtil','form','ajaxUtil'],function() {
+        var commonUtil = layui.commonUtil;
+        var form = layui.form();
+        var ajaxUtil = layui.ajaxUtil;
+
+        var urls = {};
+        urls.biz_leader_query = '/admin/user/leader-list';
+
+        var controls = {};
+        controls.biz_leader_list_panel = $('#biz_leader_list_panel');
+        controls.biz_leader_info_panel = $('#biz_leader_info_panel');
+
+        function init() {
+            bindEvent();
+            loadLeaderData();
+        }
+
+        function bindEvent() {
+            // 刷新
+            controls.biz_leader_list_panel.find('button:eq(0)').bind('click',function(){
+                var args = {};
+                args.name = $.trim(controls.biz_leader_list_panel.find('input[type=text]:eq(0)').val());
+                args.code = $.trim(controls.biz_leader_list_panel.find('input[type=text]:eq(1)').val());
+                refresh(args);
+            });
+            //搜索
+            controls.biz_leader_list_panel.find('button:eq(1)').bind('click',function(){
+                var args = {};
+                args.name = $.trim(controls.biz_leader_list_panel.find('input[type=text]:eq(0)').val());
+                args.code = $.trim(controls.biz_leader_list_panel.find('input[type=text]:eq(1)').val());
+                refresh(args);
+
+            });
+            //返回
+            controls.biz_leader_info_panel.find('button:eq(0)').bind('click',function(){
+                showPanel(controls.biz_leader_list_panel)
+
+            });
+            //显示供应商详细信息
+            $("#biz_leader_list_grid").on({
+                'click': function () {
+                    var data = JSON.parse(decodeURIComponent($(this).data('leader')));
+                    $('#biz_leader_points').val(data.shop.Points);
+                    $('#biz_leader_asset').val(data.shop.Asset);
+                    $('#biz_leader_communication').val(data.shop.Communication);
+                    $('#biz_leader_email').val(data.shop.Email);
+                    $('#biz_leader_contactor').val(data.shop.Contacter);
+                    $('#biz_leader_memberoffice').val(data.shop.MemberOffice);
+                    $('#biz_leader_compete').val(data.shop.Compete);
+                    showPanel(controls.biz_leader_info_panel);
+                }
+            }, '.biz-leader-info');
+        }
+
+        function refresh(data) {
+            data = data || {};
+            var page = $("#biz_leader_list_grid").getGridParam('page'); // current page
+            var rows = $("#biz_leader_list_grid").getGridParam('rows'); // rows
+            $("#biz_leader_list_grid").jqGrid('setGridParam', {
+                page:page,
+                rows:rows,
+                postData:data
+            }).trigger("reloadGrid");
+        }
+
+        function loadLeaderData() {
+            $("#biz_leader_list_grid").jqGrid({
+                colModel: [
+                    {label: '商家名称', name: 'LeaderName',align:'center',formatter:function(cellValue, options, rowObject){
+                        return rowObject.shop.MemberName;
+                    }},
+                    {
+                        label: '客户级别',
+                        name: 'RoleId',
+                        align: 'center',
+                        formatter: function (cellValue, options, rowObject) {
+                            console.log(rowObject.shop);
+                            if(rowObject.shop.RoleId == 1){
+                                return "厂商";
+                            } else if(rowObject.shop.RoleId == 2){
+                                return "经销商";
+                            } else if(rowObject.shop.RoleId == 3){
+                                return "分销商";
+                            } else if(rowObject.shop.RoleId == 4){
+                                return "二批商";
+                            }
+                            return "上级";
+                        }
+                    },
+                    {label: '地址', name: 'Address',align:'center',formatter:function(cellValue, options, rowObject){
+                        return commonUtil.filter(rowObject.shop.Address);
+                    }},
+                    {label: '地区', name: 'LeaderArea',align:'center',formatter:function(cellValue, options, rowObject){
+                        return commonUtil.filter(rowObject.shop.MemberAreaStr);
+                    }},
+                    {label: 'BU', name: 'LeaderBU',align:'center',formatter:function(cellValue, options, rowObject){
+                        return commonUtil.filter(rowObject.shop.MemberBUStr);
+                    }},
+                    {label: '操作',align:'center',formatter:function(cellValue, options, rowObject) {
+                        var _dom =
+                            '<span data-leader="'+encodeURIComponent(JSON.stringify(rowObject))
+                            + '" href="javascript:;" class="my-grid-a-span biz-leader-delete">删除</span>/'
+                            + '<span data-leader="'+encodeURIComponent(JSON.stringify(rowObject))
+                            + '" href="javascript:;" class="my-grid-a-span biz-leader-info">详情</span>';
+
+                        return _dom;
+                    }}
+                ],
+                datatype:'json',
+                url:urls.biz_leader_query,
+                rowNum:10,
+                rowList:[10,20,30],
+                viewrecords: true, // show the current page, data rang and total records on the toolbar
+                height: true,
+                fitColumns: true,
+                width:true,
+                autowidth: true,
+                shrinkToFit: true,
+                ajaxGridOptions:{
+                    dataFilter:function(ret) {
+                        var retObj = JSON.parse(ret);
+                        if(retObj.status == 0) {
+                            return JSON.stringify(retObj.data);
+                        } else {
+                            commonUtil.toast(retObj.msg);
+                        }
+                    }
+                },
+                pager: "#biz_leader_list_grid_pager"
+            });
+
+            // 初始化宽宽，用于自适应宽度
+            $("#biz_leader_list_grid").setGridWidth($("#admin-tab-container").width()-10, true);
+        }
+
+        function showPanel(target) {
+            controls.biz_leader_list_panel.hide();
+            controls.biz_leader_info_panel.hide();
+            target.show();
+        }
+
+        (function(){
+            init();
+        })();
+    });
+</script>

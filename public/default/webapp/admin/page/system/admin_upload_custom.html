@@ -1,0 +1,289 @@
+<div class="site-demo-body" id="biz_upload_jxs_panel" style="max-width: 800px;">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+        <legend>经销商导入</legend>
+    </fieldset>
+    <blockquote class="layui-elem-quote">
+         <a href="/xlsFile/经销商导入模板.xlsx" target="_blank">点击此处下载经销商导入模板</a>
+    </blockquote>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">文件名</label>
+        <div class="layui-input-block">
+            <input type="text" name="title" id="jxsFileName" required  lay-verify="required" placeholder="请点击上传文件按钮" autocomplete="off" class="layui-input" disabled="disabled">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">操作</label>
+        <div class="layui-input-block">
+            <input type="file" name="file" lay-type="filer" class="layui-upload-file" lay-title="点击上传文件" id="jxsFile">
+            <button class="layui-btn" id="checkButton">开始导入</button>
+            <button type="reset" class="layui-btn">重置</button>
+            <input type="hidden" id="userFile">
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">上传结果</label>
+        <div class="layui-input-block">
+            <textarea placeholder="上传文件检查结果" class="layui-textarea" style="height: 300px;" disabled="disabled"></textarea>
+        </div>
+    </div>
+</div>
+
+<div class="site-demo-body" id="biz_upload_fxs_panel" style="max-width: 800px;">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+        <legend>分销商导入</legend>
+    </fieldset>
+    <blockquote class="layui-elem-quote">
+        <a href="/xlsFile/分销商和门店导入模板.xlsx" target="_blank">点击此处下载分销商导入模板</a>
+    </blockquote>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">文件名</label>
+        <div class="layui-input-block">
+            <input type="text" name="title" id="fxsFileName" required  lay-verify="required" placeholder="请点击上传文件按钮" autocomplete="off" class="layui-input" disabled="disabled">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">操作</label>
+        <div class="layui-input-block">
+            <input type="file" name="file" lay-type="filer" class="layui-upload-file" lay-title="点击上传文件" id="fxsFile">
+            <button class="layui-btn">开始导入</button>
+            <button type="reset" class="layui-btn">重置</button>
+            <input type="hidden" id="userFxsFile">
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">上传结果</label>
+        <div class="layui-input-block">
+            <textarea placeholder="上传文件检查结果" class="layui-textarea" style="height: 300px;" disabled="disabled"></textarea>
+        </div>
+    </div>
+</div>
+
+<div class="site-demo-body" id="biz_upload_goods_panel" style="max-width: 800px;">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+        <legend>商品导入</legend>
+    </fieldset>
+    <blockquote class="layui-elem-quote">
+        <a href="/xlsFile/商品导入模板.xlsx" target="_blank">商品导入模板</a>
+    </blockquote>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">文件名</label>
+        <div class="layui-input-block">
+            <input type="text" name="title" id="goodsFileName" required  lay-verify="required" placeholder="请点击上传文件按钮" autocomplete="off" class="layui-input" disabled="disabled">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">操作</label>
+        <div class="layui-input-block">
+            <input type="file" name="file" lay-type="filer" class="layui-upload-file" lay-title="点击上传文件" id="goodsFile">
+            <button class="layui-btn">开始导入</button>
+            <button type="reset" class="layui-btn">重置</button>
+            <input type="hidden" id="goodsFileValue">
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">上传结果</label>
+        <div class="layui-input-block">
+            <textarea placeholder="上传文件检查结果" class="layui-textarea" style="height: 300px;" disabled="disabled"></textarea>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    layui.use(['commonUtil', 'form', 'ajaxUtil', 'upload', 'element','layedit'], function () {
+        var commonUtil = layui.commonUtil;
+        var element = layui.element();
+        var ajaxUtil = layui.ajaxUtil;
+
+        var controls = {};
+        controls.biz_upload_jxs_panel = $('#biz_upload_jxs_panel');
+        controls.biz_upload_fxs_panel = $('#biz_upload_fxs_panel');
+        controls.biz_upload_goods_panel = $('#biz_upload_goods_panel');
+
+        var urls = {};
+        urls.check_user_upload = '/admin/user/check-user-upload';
+        urls.check_fxs_user_upload = '/admin/user/check-fxs-user-upload';
+        urls.check_goods_upload = '/admin/user/check-goods-upload';
+
+        //经销商模板导入
+        layui.upload({
+            url: '/admin/file/custom',
+            ext: 'xlsx|xls',
+            elem: '#jxsFile',
+            success: function (res) {
+                var filename = res.data.filename;
+                var originalFilename = res.data.originalFilename;
+                controls.biz_upload_jxs_panel.find('#userFile').val(filename);
+                controls.biz_upload_jxs_panel.find('#jxsFileName').val(originalFilename);
+                console.log(res);
+            }
+        });
+        controls.biz_upload_jxs_panel.find('button:eq(0)').bind('click', function () {
+            var filename = controls.biz_upload_jxs_panel.find('#userFile').val();
+            console.log(filename);
+            if(!filename || filename == ""){
+                commonUtil.toast('请先上传文件');
+                return;
+            }
+            ajaxUtil.doAjaxGet(urls.check_user_upload, {
+                'filename': filename
+            }).done(function (ret) {
+                commonUtil.toast(ret.msg);
+                console.log(ret);
+                if(ret.code == 200){
+                    controls.biz_upload_jxs_panel.find('textarea').val("上传成功!");
+                    return;
+                }
+                if(!ret.data){
+                    return;
+                }
+                var loginNameStr = "", userCodeStr = "", buStr = "", areaStr = "";
+                if(ret.data.buErrorArray && ret.data.buErrorArray.length > 0){
+                    buStr = "BU错误：";
+                    for(var i=0;i<ret.data.buErrorArray.length;i++){
+                        buStr += ret.data.buErrorArray[i] + " ";
+                    }
+                }
+                if(ret.data.nameErrorArray && ret.data.nameErrorArray.length > 0){
+                    loginNameStr = "经销商登录帐号重复：";
+                    for(var i=0;i<ret.data.nameErrorArray.length;i++){
+                        loginNameStr += ret.data.nameErrorArray[i] + " ";
+                    }
+                }
+                if(ret.data.codeErrorArray && ret.data.codeErrorArray.length > 0){
+                    userCodeStr = "经销商编码重复：";
+                    for(var i=0;i<ret.data.codeErrorArray.length;i++){
+                        userCodeStr += ret.data.codeErrorArray[i] + " ";
+                    }
+                }
+                if(ret.data.areaErrorArray && ret.data.areaErrorArray.length > 0){
+                    areaStr = "地址错误：";
+                    for(var i=0;i<ret.data.areaErrorArray.length;i++){
+                        areaStr += ret.data.areaErrorArray[i] + " ";
+                    }
+                }
+                controls.biz_upload_jxs_panel.find('textarea').val(loginNameStr + userCodeStr + buStr + areaStr);
+            });
+        });
+        controls.biz_upload_jxs_panel.find('button:eq(1)').bind('click', function () {
+            controls.biz_upload_jxs_panel.find('#userFile').val("");
+            controls.biz_upload_jxs_panel.find('#jxsFileName').val("");
+            controls.biz_upload_jxs_panel.find('textarea').val("");
+        });
+
+        //分销商模板导入
+        layui.upload({
+            url: '/admin/file/custom',
+            ext: 'xlsx|xls',
+            elem: '#fxsFile',
+            success: function (res) {
+                var filename = res.data.filename;
+                var originalFilename = res.data.originalFilename;
+                controls.biz_upload_fxs_panel.find('#userFxsFile').val(filename);
+                controls.biz_upload_fxs_panel.find('#fxsFileName').val(originalFilename);
+                console.log(res);
+            }
+        });
+        controls.biz_upload_fxs_panel.find('button:eq(0)').bind('click', function () {
+            var filename = controls.biz_upload_fxs_panel.find('#userFxsFile').val();
+            console.log(filename);
+            if(!filename){
+                commonUtil.toast('请先上传文件');
+                return;
+            }
+            ajaxUtil.doAjaxGet(urls.check_fxs_user_upload, {
+                'filename': filename
+            }).done(function (ret) {
+                commonUtil.toast(ret.msg);
+                if(ret.code == 200){
+                    controls.biz_upload_fxs_panel.find('textarea').val("上传成功!");
+                    return;
+                }
+                if(!ret.data){
+                    return;
+                }
+                var loginNameStr = "", userCodeStr = "", jxsCodeStr = "", areaStr = "";
+                if(ret.data.nameErrorArray && ret.data.nameErrorArray.length > 0){
+                    loginNameStr = "分销商登录帐号重复：";
+                    for(var i=0;i<ret.data.nameErrorArray.length;i++){
+                        loginNameStr += ret.data.nameErrorArray[i] + " ";
+                    }
+                }
+                if(ret.data.fxsCodeErrorArray && ret.data.fxsCodeErrorArray.length > 0){
+                    userCodeStr = "分销商编码重复：";
+                    for(var i=0;i<ret.data.fxsCodeErrorArray.length;i++){
+                        userCodeStr += ret.data.fxsCodeErrorArray[i] + " ";
+                    }
+                }
+                if(ret.data.jxsCodeErrorArray && ret.data.jxsCodeErrorArray.length > 0){
+                    jxsCodeStr = "经销商编码错误：";
+                    for(var i=0;i<ret.data.jxsCodeErrorArray.length;i++){
+                        jxsCodeStr += ret.data.jxsCodeErrorArray[i].toString() + " ";
+                    }
+                }
+                if(ret.data.areaErrorArray && ret.data.areaErrorArray.length > 0){
+                    areaStr = "地址错误：";
+                    for(var i=0;i<ret.data.areaErrorArray.length;i++){
+                        areaStr += ret.data.areaErrorArray[i].toString() + " ";
+                    }
+                }
+                controls.biz_upload_fxs_panel.find('textarea').val(loginNameStr + userCodeStr + jxsCodeStr + areaStr);
+                console.log(ret);
+            });
+        });
+        controls.biz_upload_fxs_panel.find('button:eq(1)').bind('click', function () {
+            controls.biz_upload_fxs_panel.find('#userFxsFile').val("");
+            controls.biz_upload_fxs_panel.find('#fxsFileName').val("");
+            controls.biz_upload_fxs_panel.find('textarea').val("");
+        });
+
+        //商品模板导入
+        layui.upload({
+            url: '/admin/file/custom',
+            ext: 'xlsx|xls',
+            elem: '#goodsFile',
+            success: function (res) {
+                var filename = res.data.filename;
+                var originalFilename = res.data.originalFilename;
+                console.log(res.data);
+                controls.biz_upload_goods_panel.find('#goodsFileValue').val(filename);
+                controls.biz_upload_goods_panel.find('#goodsFileName').val(originalFilename);
+                console.log(res);
+            }
+        });
+        controls.biz_upload_goods_panel.find('button:eq(0)').bind('click', function () {
+            var filename = controls.biz_upload_goods_panel.find('#goodsFileValue').val();
+            console.log(filename);
+            if(!filename){
+                commonUtil.toast('请先上传文件');
+                return;
+            }
+            ajaxUtil.doAjaxGet(urls.check_goods_upload, {
+                'filename': filename
+            }).done(function (ret) {
+                commonUtil.toast(ret.msg);
+                if(ret.code == 200){
+                    controls.biz_upload_goods_panel.find('textarea').val("上传成功!");
+                    return;
+                }
+                if(!ret.data){
+                    return;
+                }
+                var goodsCodeStr = "";
+                if(ret.data.goodsCodeErrorArray && ret.data.goodsCodeErrorArray.length > 0){
+                    goodsCodeStr = "商品编码重复：";
+                    for(var i=0;i<ret.data.goodsCodeErrorArray.length;i++){
+                        goodsCodeStr += ret.data.goodsCodeErrorArray[i].toString() + " ";
+                    }
+                }
+                controls.biz_upload_goods_panel.find('textarea').val(goodsCodeStr);
+                console.log(ret);
+            });
+        });
+        controls.biz_upload_goods_panel.find('button:eq(1)').bind('click', function () {
+            controls.biz_upload_goods_panel.find('#goodsFileName').val("");
+            controls.biz_upload_goods_panel.find('#goodsFileValue').val("");
+            controls.biz_upload_goods_panel.find('textarea').val("");
+        });
+    })
+
+</script>

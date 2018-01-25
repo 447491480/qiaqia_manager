@@ -1,0 +1,47 @@
+{
+    "development": {
+        "username": "root",
+        "password": "Qq2017b2b",
+        "database": "qiaqia_product",
+        "host": "192.168.14.34",
+        "dialect": "mysql",
+        "port": "3306",
+        "charset" : "utf8mb4",
+        "timezone" : "+08:00",
+        "output": "../models",
+        "additional": {
+            "timestamps": false,
+            "freezeTableName": true
+        }
+    },
+    "test": {
+        "username": "root",
+        "password": "Qq2017b2b",
+        "database": "qiaqia_product",
+        "host": "192.168.14.34",
+        "dialect": "mysql",
+        "port": "3306",
+        "charset" : "utf8mb4",
+        "timezone" : "+08:00",
+        "output": "../models",
+        "additional": {
+            "timestamps": false,
+            "freezeTableName": true
+        }
+    },
+    "production": {
+        "username": "root",
+        "password": "Qq2017b2b",
+        "database": "qiaqia_product",
+        "host": "192.168.14.34",
+        "dialect": "mysql",
+        "port": "3306",
+        "charset" : "utf8mb4",
+        "timezone" : "+08:00",
+        "output": "../models",
+        "additional": {
+            "timestamps": false,
+            "freezeTableName": true
+        }
+    }
+}
